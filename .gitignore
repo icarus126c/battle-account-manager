@@ -1,0 +1,25 @@
+/release/
+/build/
+/checks/
+/work/
+**/data/
+**/backups/
+**/cn-exp/
+**/private-data/
+**/vault-v2.bin*
+**/accounts.bin*
+**/Cookies*
+**/Login Data*
+**/TcNo-Acc-Switcher.settings.json
+**/client-location.json
+**/directory-info.json
+**/email.json
+**/ids.json
+.env*
+*.bav
+*.bampack
+*.bak
+*.log
+*.pdb
+*.user
+*.tmp

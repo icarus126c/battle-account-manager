@@ -1,0 +1,13 @@
+{
+  "version": "1.13.1",
+  "edition": "sponsored",
+  "archiveSHA256": "23f52eccc19654488d04c953090e0bd0bf340e9e51b773062ae68f9cbb7b7a7d",
+  "archiveFiles": 93,
+  "firstPartyFiles": 84,
+  "privatePathMatches": 0,
+  "knownPrivateIdentityMatches": 0,
+  "credentialSignatureMatches": 0,
+  "manifestAndFolderMatch": true,
+  "originalPublicAlipayQrPreserved": true,
+  "scope": "Package inventory, hashes and known identity/credential signatures. No real account vault was opened or decrypted. Public author payment QR is intentionally included; test fixtures contain fictional examples."
+}

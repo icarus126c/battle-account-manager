@@ -1,0 +1,26 @@
+第三方组件与源码
+
+TcNo Account Switcher v4.0.8
+项目：https://github.com/TCNOco/TcNo-Acc-Switcher
+版本：https://github.com/TCNOco/TcNo-Acc-Switcher/releases/tag/v4.0.8
+许可：GNU GPL v3，完整许可在 Engine/LICENSE。
+原版 EXE 未修改，SHA256：c22ddad5eb76d2b72a3fe527f831198688bfac33e3f4e5f676d42ab5ab6c5c1a。
+本管家通过独立进程调用其 Battle.net 功能，运行时生成自定义设置以避免自动结束战网。
+随包 ThirdParty/TcNo-Acc-Switcher-v4.0.8-source.zip 为上游 v4.0.8 标签的源码归档，含构建脚本与依赖清单。
+源码内 Platforms.json 与所用平台定义指纹已核对一致。上游 wiki 子模块为文档，归档未包含；可从项目 wiki 访问。
+上游源码获取地址：https://codeload.github.com/TCNOco/TcNo-Acc-Switcher/zip/refs/tags/v4.0.8
+本包提供源码归档不代表已在本机重建上游 EXE；上游构建依赖按其 go.mod、go.sum 和构建说明获取。
+
+Microsoft Edge WebView2
+相关许可与声明保留在 WebView2-LICENSE.txt、WebView2-NOTICE.txt。
+系统运行时不随包安装；使用已有运行时或在环境检查中打开官方安装入口。
+
+本管家源代码与构建
+Source/src 和 Source/startup 包含本版本完整管家源码，Source/build.ps1 为构建入口。
+示例：在 PowerShell 中进入 Source，运行：
+  .\build.ps1 -Edition friends -DependencyDirectory .. -OutputDirectory .\build
+Edition 可为 personal、friends、sponsored。
+赞助版构建后，另复制软件根目录的 sponsor.json 至构建输出目录。
+使用 Windows 的 .NET Framework C# 编译器，不需要 Codex。
+
+分享时请保留第三方许可、归属说明及对应源码材料。

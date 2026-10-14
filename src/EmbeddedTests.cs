@@ -1,0 +1,10 @@
+using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;
+namespace BrowserManager {
+ public static class EmbeddedTests {
+  static bool Reject(Action a){try{a();return false;}catch{return true;}}
+  public static void Run(string report){var rows=new List<string>();Action<bool,string> check=(p,label)=>{if(!p)throw new InvalidOperationException(label);rows.Add("通过："+label);};
+   string a=Guid.NewGuid().ToString("N"),b=Guid.NewGuid().ToString("N");check(EmbeddedPolicy.Profile(a)!=EmbeddedPolicy.Profile(b),"每个账号使用不同的 WebView2 profile");check(Reject(()=>EmbeddedPolicy.Profile("../outside")),"非法账号标识不能生成 profile");check(EmbeddedPolicy.Web(Browser.Home),"接受官方国服账号入口");check(EmbeddedPolicy.Web("https://oauth.g.mkey.163.com/oauth-front/"),"接受网易认证页面导航");check(EmbeddedPolicy.Web("https://passport.163.com/login"),"接受网易验证页面");check(!EmbeddedPolicy.Web("https://account.battlenet.com.cn.example.invalid/"),"拒绝伪装官方域名");check(!EmbeddedPolicy.Web("file:///C:/Windows/win.ini"),"网页登录不能读取本地文件");check(!EmbeddedPolicy.Web("https://user:pass@account.battlenet.com.cn/"),"拒绝带用户名密码的链接");check(!EmbeddedPolicy.Web("javascript:alert(1)"),"拒绝 JavaScript 地址导航");check(EmbeddedPolicy.External("battlenet://fixture","https://account.battlenet.com.cn"),"只允许官方来源的战网协议回跳");check(!EmbeddedPolicy.External("battlenet://fixture","https://example.invalid"),"外部网页不能发起战网回跳");check(!EmbeddedPolicy.External("powershell://fixture","https://account.battlenet.com.cn"),"不启动无关外部协议");check(!EmbeddedPolicy.Options().AllowSingleSignOnUsingOSPrimaryAccount,"Windows 主账号单点登录明确关闭");check(!EmbeddedPolicy.Options().AreBrowserExtensionsEnabled,"内置浏览器不加载日常浏览器扩展");check(EmbeddedPolicy.Site("https://account.battlenet.com.cn/login/?token=FAKE") == "account.battlenet.com.cn","窗口地址栏仅显示域名，不显示临时登录参数");check(EmbeddedPolicy.WaitingHtml("<fake>").Contains("&lt;fake&gt;"),"账号显示名称经过 HTML 转义");
+   rows.Add("合计 "+rows.Count+" 项通过；只使用虚构链接和账号，没有启动真实登录或操作真实资料。");File.WriteAllLines(report,rows,new UTF8Encoding(true));
+  }
+ }
+}

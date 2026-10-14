@@ -1,0 +1,23 @@
+﻿战网账号管家 v1.13.0 代码结构
+
+MainWindow.cs：主界面、账号列表、账号资料展示与编辑入口。
+MainWindow.WebLogin.cs：自动及手动网页登录的共同界面流程，管理取消按钮、忙碌状态、日志及完成后的接管交接。
+MainWindow.Login.cs：官方客户端启动、目标窗口刷新、登录请求接收和外服操作入口。
+WebSessionStarter.cs：独立于界面的流程协调，发现登录窗口、等待、选定目标、准备浏览器、接管、取消与超时。
+OfficialWebSession.cs：访问官方客户端及登录接管的实际适配，避免重复启动，串行处理尚未完成的接管收尾。
+EmbeddedSessions.cs：每个账号的内置窗口、共享 WebView2 环境、取消与窗口清理，保留原有持久资料路径。
+EmbeddedBrowser.cs：浏览器导航政策、窗口界面、回跳与验证页面。
+PendingWork.cs：对不能直接取消的第三方异步调用进行有界等待，观察迟到错误并释放迟到的资源。
+GlobalLogin.cs / CnEngine.cs：外服及国服的原版切换流程。引擎仍运行的状态与普通失败分开处理，前者禁止自动撤回配置。
+
+兼容范围
+本版未更改账号持久化格式、保护格式、固定资料目录或账号浏览器 profile 命名。
+没有导入、覆盖或重新登记现有账号，没有复制浏览器登录缓存进发行包。
+代码中的测试使用虚构数据；Source 中保留测试入口，检查记录随发行包附带。
+
+构建
+随包 Source/build.ps1 支持传入 -DependencyDirectory 指向发行包根目录（其中包含 WebView2 DLL、许可及 Engine 文件夹）。
+使用 .NET Framework C# 编译器构建 x86 应用，不依赖 Codex。
+
+Edition.cs：编译时选择发行版本名称和赞助展示开关。
+SponsorCard.cs：本地纯文字赞助卡片、网址校验与关闭偏好，不接触账号资料或登录请求。
