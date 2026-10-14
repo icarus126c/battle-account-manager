@@ -21,3 +21,7 @@ GlobalLogin.cs / CnEngine.cs：外服及国服的原版切换流程。引擎仍�
 
 Edition.cs：编译时选择发行版本名称和赞助展示开关。
 SponsorCard.cs：本地纯文字赞助卡片、网址校验与关闭偏好，不接触账号资料或登录请求。
+
+PortableAccounts.cs：跨电脑账号迁移加密格式、限长读取、去除本机验证器和登录状态，不调用 DPAPI。
+PortableAccountsUi.cs：迁移密码设置、确认、导出及先预览后合并导入。
+PortableAccountsTests.cs：虚构资料的密码、篡改、合并、目标保护和原库保留检查。

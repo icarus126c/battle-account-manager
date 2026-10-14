@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +37,8 @@ namespace BrowserManager {
                 await Task.Run(()=>FullBackup.Create(store,save.FileName,value=>Dispatcher.BeginInvoke(new Action(()=>status.Text=value))));status.Text="完整加密备份已保存并校验，包含账号、网页资料和登记记录。";
             }catch(Exception e){status.Text=e is InvalidOperationException?e.Message:"备份未完成，原资料保持原样。请关闭专用浏览器后重试。";}finally{SetBusy(false);UpdateStorageInfo();}
         }
-        async void Import(){Stop();HidePassword();var open=new OpenFileDialog{Title="导入或恢复备份",Filter="账号／完整备份 (*.bav;*.bin;*.bampack)|*.bav;*.bin;*.bampack"};if(open.ShowDialog(this)!=true)return;
+        async void Import(){Stop();HidePassword();var open=new OpenFileDialog{Title="导入或恢复备份",Filter="账号／完整备份 (*.bav;*.bin;*.bampack;*.bammove)|*.bav;*.bin;*.bampack;*.bammove"};if(open.ShowDialog(this)!=true)return;
+            if(open.FileName.EndsWith(".bammove",StringComparison.OrdinalIgnoreCase)){try{ImportPortable(open.FileName);}catch(Exception e){status.Text=e is InvalidOperationException?e.Message:"迁移包未能导入，原资料保留。";}return;}
             RestoreStage stage=null;byte[] packet=null;
             try{RequireVaultAccess();if(!open.FileName.EndsWith(".bampack",StringComparison.OrdinalIgnoreCase)){var incoming=ImportVaultBackup(open.FileName);if(incoming==null||!PreviewRestore(incoming,false,DateTime.MinValue))return;var updated=Clone();int added=Accounts.Merge(updated,incoming);if(added>0)Commit(updated,null);status.Text="已添加 "+added+" 个账号，相同账号及当前网页状态未覆盖。";return;}
                 packet=FullBackup.ReadKeyPacket(open.FileName);var envelope=OpenBundleEnvelope(packet);if(envelope==null)return;RequireVaultAccess();SetBusy(true);status.Text="正在读取并校验完整备份…";

@@ -34,6 +34,7 @@ namespace BrowserManager {
             var root=new DockPanel();Content=new Border{Padding=new Thickness(24),Background=Background,Child=root};var close=Ui.Button("关闭",()=>Close(),false);DockPanel.SetDock(close,Dock.Bottom);root.Children.Add(close);var panel=new StackPanel();root.Children.Add(new ScrollViewer{Content=panel,VerticalScrollBarVisibility=ScrollBarVisibility.Auto});panel.Children.Add(Ui.Text("设置与备份",24));
             var privacy=Ui.Card(panel);privacy.Children.Add(Ui.Text("访问保护",18));Add(privacy,"密码库与可选二次验证","security");
             var storage=Ui.Card(panel);storage.Children.Add(Ui.Text("资料与备份",18));storage.Children.Add(Ui.Text(summary,12));var row=new WrapPanel();storage.Children.Add(row);Add(row,"备份资料","backup");Add(row,"导入备份","restore");Add(row,"仅备份账号备忘","memo");var folders=new WrapPanel();storage.Children.Add(folders);Add(folders,"打开资料目录","data");Add(folders,"打开备份目录","backups");Add(folders,"打开保留的原目录","previous");storage.Children.Add(Ui.Text("完整备份包含网页资料。备份／恢复前请关闭专用浏览器；备份受当前 Windows 用户保护。",12));
+            var transfer=Ui.Card(panel);transfer.Children.Add(Ui.Text("换电脑 · 密码迁移包",18));transfer.Children.Add(Ui.Text("用单独的迁移密码携带账号、密码和备注。登录状态需在新电脑重新建立。",12));var transferRow=new WrapPanel();transfer.Children.Add(transferRow);Add(transferRow,"导出迁移包","portable-export");Add(transferRow,"导入迁移包","portable-import");
             var client=Ui.Card(panel);client.Children.Add(Ui.Text("客户端与登录环境",18));Add(client,"环境与战网位置","environment");Add(client,"解锁外服客户端","region");
         }
         void Add(Panel parent,string text,string key){parent.Children.Add(Ui.Button(text,()=>{Choice=key;Close();},false));}
@@ -84,7 +85,7 @@ namespace BrowserManager {
         }
         void ShowSettings(){
             RequireVaultAccess();HidePassword();UpdateStorageInfo();var dialog=new SettingsDialog(this,storageSummary.Text);dialog.ShowDialog();RequireVaultAccess();
-            switch(dialog.Choice){case "security":ConfigureVault();break;case "backup":Backup();break;case "restore":Import();break;case "memo":BackupAccounts();break;case "data":OpenFolder(store.Home);break;case "backups":OpenFolder(Path.Combine(store.Home,"backups"));break;case "previous":OpenPreviousFolder();break;case "environment":ShowEnvironment();break;case "region":ShowRegionEntries();break;}
+            switch(dialog.Choice){case "portable-export":ExportPortable();break;case "portable-import":ChoosePortable();break;case "security":ConfigureVault();break;case "backup":Backup();break;case "restore":Import();break;case "memo":BackupAccounts();break;case "data":OpenFolder(store.Home);break;case "backups":OpenFolder(Path.Combine(store.Home,"backups"));break;case "previous":OpenPreviousFolder();break;case "environment":ShowEnvironment();break;case "region":ShowRegionEntries();break;}
         }
         void OpenPreviousFolder(){string path=Path.Combine(store.Home,"directory-info.json");if(!File.Exists(path))throw new InvalidOperationException("本资料库尚无迁移或整套恢复记录。");var info=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<DirectoryInfoRecord>(File.ReadAllText(path));if(info==null||string.IsNullOrEmpty(info.Source)||!Directory.Exists(info.Source))throw new InvalidOperationException("保留的原目录不在原位置，请查看完整备份。");OpenFolder(info.Source);}
     }

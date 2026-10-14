@@ -29,3 +29,9 @@ https://github.com/google/google-authenticator/wiki/Key-Uri-Format
 https://learn.microsoft.com/en-us/dotnet/standard/security/vulnerabilities-cbc-mode
 https://devblogs.microsoft.com/dotnet/announcing-the-net-framework-4-7-2/
 需要 .NET Framework 4.7.2 或更新版本。
+
+v1.14.0：额外的跨电脑迁移包
+仅 .bammove 使用独立迁移密码加密且不叠加 Windows DPAPI；本机账号库和原备份仍绑定当前 Windows 用户。
+不导出管家主密码、管家验证器密钥及恢复码；手工账号备忘会导出。
+PBKDF2-HMAC-SHA256 600000 次 + 随机盐，AES-256-CBC + 随机 IV，HMAC-SHA256 验证后解密。
+迁移密码保护导出文件；导入后沿用目标电脑的本机保护设置。完整边界见“跨电脑迁移说明.txt”。

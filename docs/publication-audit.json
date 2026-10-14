@@ -1,9 +1,9 @@
 {
-  "version": "1.13.1",
+  "version": "1.14.1",
   "edition": "sponsored",
-  "archiveSHA256": "23f52eccc19654488d04c953090e0bd0bf340e9e51b773062ae68f9cbb7b7a7d",
-  "archiveFiles": 93,
-  "firstPartyFiles": 84,
+  "archiveSHA256": "1d772f47f2ce36d5ba12ff4d3a81e677171c354a1a79d76ffe034077e198ef2b",
+  "archiveFiles": 99,
+  "firstPartyFiles": 90,
   "privatePathMatches": 0,
   "knownPrivateIdentityMatches": 0,
   "credentialSignatureMatches": 0,
