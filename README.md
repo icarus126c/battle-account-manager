@@ -2,7 +2,7 @@
 
 Windows 上的国服 / 外服账号管理工具：账号备忘、密码库保护、独立网页登录，以及利用官方客户端已保留状态的账号切换。
 
-**[下载 v1.14.1 赞助版](https://github.com/icarus126c/battle-account-manager/releases/tag/v1.14.1)** · [使用说明](docs/使用说明.txt) · [密码保护说明](docs/保护说明.txt)
+**[下载 v1.14.2 赞助版](https://github.com/icarus126c/battle-account-manager/releases/tag/v1.14.2)** · [使用说明](docs/使用说明.txt) · [密码保护说明](docs/保护说明.txt)
 
 这是第三方工具，与暴雪、网易或支付宝没有官方隶属关系。首次登录、验证码、将军令及官方授权由使用者本人完成。
 
@@ -10,7 +10,7 @@ Windows 上的国服 / 外服账号管理工具：账号备忘、密码库保护
 
 ## 开始使用
 
-1. 下载 Release 中的 `battle-account-manager-1.14.1-sponsored-windows.zip`，完整解压。
+1. 下载 Release 中的 `battle-account-manager-1.14.2-sponsored-windows.zip`，完整解压。
 2. 关闭旧版管家，运行“启动账号管家.exe”。无需安装 Codex 或开发环境。
 3. 在国服或外服列表添加自己的账号。密码可以只作备忘，也可以不填。
 4. 国服首次使用“网页登录”，按官方页面完成认证；外服首次登录时勾选“保持登录”。
