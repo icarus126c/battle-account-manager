@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;
+﻿using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;
 namespace BrowserManager {
  public static class EmbeddedTests {
   static bool Reject(Action a){try{a();return false;}catch{return true;}}

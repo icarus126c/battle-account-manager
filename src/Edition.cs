@@ -1,4 +1,4 @@
-namespace BrowserManager {
+﻿namespace BrowserManager {
     public static class Edition {
 #if EDITION_SPONSORED
         public static string Name { get { return "赞助版"; } }

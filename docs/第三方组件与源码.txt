@@ -1,4 +1,4 @@
-第三方组件与源码
+﻿第三方组件与源码
 
 TcNo Account Switcher v4.0.8
 项目：https://github.com/TCNOco/TcNo-Acc-Switcher

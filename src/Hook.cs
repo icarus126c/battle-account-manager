@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Diagnostics;using System.Collections.Generic;using System.Runtime.InteropServices;using System.Text;
+﻿using System;using System.IO;using System.Linq;using System.Diagnostics;using System.Collections.Generic;using System.Runtime.InteropServices;using System.Text;
 namespace CnDirect {
     public class Target { public int Pid;public long Started;public string Title;public override string ToString(){return Title+"（"+Pid+"）";} }
     public class Installed {public ImportSlot Slot;public uint Code;}

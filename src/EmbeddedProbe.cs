@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;using System.Threading.Tasks;using System.Windows;using System.Windows.Controls;using System.Windows.Media;using System.Windows.Media.Imaging;using Microsoft.Web.WebView2.Core;using Microsoft.Web.WebView2.Wpf;
+﻿using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;using System.Threading.Tasks;using System.Windows;using System.Windows.Controls;using System.Windows.Media;using System.Windows.Media.Imaging;using Microsoft.Web.WebView2.Core;using Microsoft.Web.WebView2.Wpf;
 namespace BrowserManager {
  public static class EmbeddedProbe {
   static readonly List<string> Rows=new List<string>();

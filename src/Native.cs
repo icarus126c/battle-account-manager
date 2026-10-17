@@ -1,4 +1,4 @@
-using System; using System.IO; using System.Text; using System.Collections.Generic; using System.ComponentModel; using System.Runtime.InteropServices;
+﻿using System; using System.IO; using System.Text; using System.Collections.Generic; using System.ComponentModel; using System.Runtime.InteropServices;
 namespace CnDirect {
     public static class Native {
         [DllImport("kernel32.dll",SetLastError=true)] public static extern IntPtr OpenProcess(uint rights,bool inherit,int pid);

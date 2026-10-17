@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Collections.Generic;using System.Reflection;using System.Text;using System.Windows.Controls;
+﻿using System;using System.IO;using System.Linq;using System.Collections.Generic;using System.Reflection;using System.Text;using System.Windows.Controls;
 namespace BrowserManager {
     public static class BrowserChoiceUiTests {
         static T Field<T>(MainWindow window,string name){return (T)typeof(MainWindow).GetField(name,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(window);}

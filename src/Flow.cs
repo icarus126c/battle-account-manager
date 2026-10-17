@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Collections.Generic;using SessionProbe;
+﻿using System;using System.IO;using System.Linq;using System.Collections.Generic;using SessionProbe;
 namespace CnDirect {
     public static class Flow {
         public static string Profiles(string root){string prior=Path.GetFullPath(Path.Combine(root,@"..\BattleLogin-验证工具\private-data\browser"));if(Directory.Exists(Path.Combine(prior,"CN-A"))||Directory.Exists(Path.Combine(prior,"CN-B")))return prior;return Path.Combine(root,@"private-data\browser");}

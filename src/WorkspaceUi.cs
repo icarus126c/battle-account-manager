@@ -30,12 +30,13 @@ namespace BrowserManager {
     }
     internal sealed class SettingsDialog:Window {
         internal string Choice;
-        internal SettingsDialog(Window owner,string summary){Owner=owner;Title="设置与备份";Width=620;Height=Math.Min(700,SystemParameters.WorkArea.Height*.9);WindowStartupLocation=owner==null?WindowStartupLocation.CenterScreen:WindowStartupLocation.CenterOwner;Background=Ui.Brush("#F4F6FB");FontFamily=new System.Windows.Media.FontFamily("Microsoft YaHei UI");
+        internal SettingsDialog(Window owner,string summary,Func<string> multipleStatus=null){Owner=owner;Title="设置与备份";Width=620;Height=Math.Min(700,SystemParameters.WorkArea.Height*.9);WindowStartupLocation=owner==null?WindowStartupLocation.CenterScreen:WindowStartupLocation.CenterOwner;Background=Ui.Brush("#F4F6FB");FontFamily=new System.Windows.Media.FontFamily("Microsoft YaHei UI");
             var root=new DockPanel();Content=new Border{Padding=new Thickness(24),Background=Background,Child=root};var close=Ui.Button("关闭",()=>Close(),false);DockPanel.SetDock(close,Dock.Bottom);root.Children.Add(close);var panel=new StackPanel();root.Children.Add(new ScrollViewer{Content=panel,VerticalScrollBarVisibility=ScrollBarVisibility.Auto});panel.Children.Add(Ui.Text("设置与备份",24));
             var privacy=Ui.Card(panel);privacy.Children.Add(Ui.Text("访问保护",18));Add(privacy,"密码库与可选二次验证","security");
             var storage=Ui.Card(panel);storage.Children.Add(Ui.Text("资料与备份",18));storage.Children.Add(Ui.Text(summary,12));var row=new WrapPanel();storage.Children.Add(row);Add(row,"备份资料","backup");Add(row,"导入备份","restore");Add(row,"仅备份账号备忘","memo");var folders=new WrapPanel();storage.Children.Add(folders);Add(folders,"打开资料目录","data");Add(folders,"打开备份目录","backups");Add(folders,"打开保留的原目录","previous");storage.Children.Add(Ui.Text("完整备份包含网页资料。备份／恢复前请关闭专用浏览器；备份受当前 Windows 用户保护。",12));
             var transfer=Ui.Card(panel);transfer.Children.Add(Ui.Text("换电脑 · 密码迁移包",18));transfer.Children.Add(Ui.Text("用单独的迁移密码携带账号、密码和备注。登录状态需在新电脑重新建立。",12));var transferRow=new WrapPanel();transfer.Children.Add(transferRow);Add(transferRow,"导出迁移包","portable-export");Add(transferRow,"导入迁移包","portable-import");
-            var client=Ui.Card(panel);client.Children.Add(Ui.Text("客户端与登录环境",18));Add(client,"环境与战网位置","environment");Add(client,"解锁外服客户端","region");
+            var client=Ui.Card(panel);client.Children.Add(Ui.Text("客户端与登录环境",18));Add(client,"环境与战网位置","environment");var multiple=Ui.Text("多开状态：正在检查…",12);client.Children.Add(multiple);Add(client,"开启战网多开","multiple");
+            Loaded+=async delegate{if(multipleStatus==null){multiple.Text="多开状态：未检查";return;}try{multiple.Text=await Task.Run(multipleStatus);}catch{multiple.Text="多开状态：暂时无法读取，请先打开一次战网后正常退出。";}};client.Children.Add(Ui.Text("首次开启前请正常退出战网，保留登录状态。此设置同时适用于国服和外服。",12));Add(client,"解锁外服客户端","region");
         }
         void Add(Panel parent,string text,string key){parent.Children.Add(Ui.Button(text,()=>{Choice=key;Close();},false));}
     }
@@ -49,7 +50,7 @@ namespace BrowserManager {
             ClearRecovery();var a=Selected;if(VaultDenied||a==null||a.Archived)return;
             ActionButton(recoveryActions,a.Region=="CN"?"改用网页登录":"重新认证",()=>{if(Require().Region=="CN")PrepareWebLogin();else PrepareGlobal();},true);
             ActionButton(recoveryActions,"检查区服",()=>{regionAdvicePanel.IsExpanded=true;regionAdvicePanel.BringIntoView();CheckRegionAdvice();},false);
-            ActionButton(recoveryActions,"检查登录环境",ShowEnvironment,false);
+            ActionButton(recoveryActions,"检查登录环境",ShowEnvironment,false);ActionButton(recoveryActions,"开启战网多开",EnableClientMultiple,false);
             if(a.Region=="CN")ActionButton(recoveryActions,"更换浏览器",()=>{options.IsExpanded=true;options.BringIntoView();},false);
             recoveryActions.Visibility=Visibility.Visible;
         }
@@ -84,8 +85,8 @@ namespace BrowserManager {
             })).Task.ConfigureAwait(false);}catch(TaskCanceledException){/* Window dispatcher is shutting down. */}
         }
         void ShowSettings(){
-            RequireVaultAccess();HidePassword();UpdateStorageInfo();var dialog=new SettingsDialog(this,storageSummary.Text);dialog.ShowDialog();RequireVaultAccess();
-            switch(dialog.Choice){case "portable-export":ExportPortable();break;case "portable-import":ChoosePortable();break;case "security":ConfigureVault();break;case "backup":Backup();break;case "restore":Import();break;case "memo":BackupAccounts();break;case "data":OpenFolder(store.Home);break;case "backups":OpenFolder(Path.Combine(store.Home,"backups"));break;case "previous":OpenPreviousFolder();break;case "environment":ShowEnvironment();break;case "region":ShowRegionEntries();break;}
+            RequireVaultAccess();HidePassword();UpdateStorageInfo();var dialog=new SettingsDialog(this,storageSummary.Text,()=>{byte[] bytes=new OfficialNativeClient().ReadConfig();try{return MultiInstanceConfig.Enabled(bytes)?"多开状态：已开启":"多开状态：未开启";}finally{Array.Clear(bytes,0,bytes.Length);}});dialog.ShowDialog();RequireVaultAccess();
+            switch(dialog.Choice){case "multiple":EnableClientMultiple();break;case "portable-export":ExportPortable();break;case "portable-import":ChoosePortable();break;case "security":ConfigureVault();break;case "backup":Backup();break;case "restore":Import();break;case "memo":BackupAccounts();break;case "data":OpenFolder(store.Home);break;case "backups":OpenFolder(Path.Combine(store.Home,"backups"));break;case "previous":OpenPreviousFolder();break;case "environment":ShowEnvironment();break;case "region":ShowRegionEntries();break;}
         }
         void OpenPreviousFolder(){string path=Path.Combine(store.Home,"directory-info.json");if(!File.Exists(path))throw new InvalidOperationException("本资料库尚无迁移或整套恢复记录。");var info=new System.Web.Script.Serialization.JavaScriptSerializer().Deserialize<DirectoryInfoRecord>(File.ReadAllText(path));if(info==null||string.IsNullOrEmpty(info.Source)||!Directory.Exists(info.Source))throw new InvalidOperationException("保留的原目录不在原位置，请查看完整备份。");OpenFolder(info.Source);}
     }

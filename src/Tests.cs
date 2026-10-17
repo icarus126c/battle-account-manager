@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Text;using System.Linq;using System.Diagnostics;using System.Collections.Generic;using System.Runtime.InteropServices;
+﻿using System;using System.IO;using System.Text;using System.Linq;using System.Diagnostics;using System.Collections.Generic;using System.Runtime.InteropServices;
 namespace CnDirect {
     public static class Tests {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]public delegate uint ShellW(IntPtr hwnd,IntPtr verb,IntPtr url,IntPtr args,IntPtr dir,int show);

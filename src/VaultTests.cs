@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;using System.Security.Cryptography;using System.Web.Script.Serialization;
+﻿using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;using System.Security.Cryptography;using System.Web.Script.Serialization;
 namespace BrowserManager {
     public static class ManagerTests {
         static byte[] Legacy(LegacyData data,bool password){byte[] raw=Encoding.UTF8.GetBytes(new JavaScriptSerializer().Serialize(data));try{var encrypted=ProtectedData.Protect(raw,Encoding.UTF8.GetBytes(password?"BattleLogin.LocalVault.v1":"BattleBrowserManager.Metadata.v1"),DataProtectionScope.CurrentUser);return password?Encoding.ASCII.GetBytes("BLOGIN01").Concat(encrypted).ToArray():encrypted;}finally{Array.Clear(raw,0,raw.Length);}}

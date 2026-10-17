@@ -16,12 +16,15 @@ namespace BrowserManager {
    var existing=new Backend{Running=true,Windows=new[]{t}};check(!Reject(existing,choice,CancellationToken.None)&&existing.Launches==0&&existing.Attached==1,"已有唯一登录窗口直接准备，不重复启动");
    var booting=new Backend{Running=true,OnWait=x=>{if(x.Waits==2)x.Windows=new[]{t};}};check(!Reject(booting,choice,CancellationToken.None)&&booting.Launches==0,"已有后台启动过程只等待，不重复打开");
    var ambiguous=new Backend{Windows=new[]{t,new Target{Pid=124,Started=457}}};check(Reject(ambiguous,choice,CancellationToken.None)&&ambiguous.Attached==0&&ambiguous.Launches==0,"多个登录窗口不猜测，保留手动选择");
-   var logged=new Backend{Running=true,Visible=true};check(Reject(logged,choice,CancellationToken.None)&&logged.Launches==0&&logged.Prepared==0,"已有普通战网窗口不自动登出或另开");
+   var logged=new Backend{Running=true,Visible=true};check(Reject(logged,choice,CancellationToken.None)&&logged.Launches==1&&logged.Prepared==0,"已有普通窗口请求显示，仍需等待登录页，不自动登出");
+   var background=new Backend{Running=true,OnWait=x=>{if(x.Launches==1)x.Windows=new[]{t};}};check(!Reject(background,choice,CancellationToken.None)&&background.Launches==1&&background.Prepared==1,"只有后台进程时不会无限空等，发送一次显示或启动请求");
    var timed=new Backend();check(Reject(timed,choice,CancellationToken.None)&&timed.Waits==90&&timed.Launches==1&&timed.Attached==0,"等待超时停止，不反复启动客户端");
    using(var cancel=new CancellationTokenSource()){cancel.Cancel();var b=new Backend();check(Reject(b,choice,cancel.Token)&&b.Launches==0&&b.Prepared==0,"开始前取消不启动战网");}
    using(var cancel=new CancellationTokenSource()){var b=new Backend{OnWait=x=>cancel.Cancel()};check(Reject(b,choice,cancel.Token)&&b.Waits==1&&b.Prepared==0,"等待时取消，不继续准备浏览器");}
    using(var cancel=new CancellationTokenSource()){var b=new Backend{Windows=new[]{t},OnPrepare=()=>cancel.Cancel()};check(Reject(b,choice,cancel.Token)&&b.Attached==0,"浏览器准备后取消不安装接管");}
    using(var cancel=new CancellationTokenSource()){var b=new Backend{Windows=new[]{t},OnAttach=()=>cancel.Cancel()};check(Reject(b,choice,cancel.Token)&&b.Handle.Closed,"接管完成瞬间取消也释放句柄");}
+   var loggedNew=new Backend{Running=true,Visible=true,OnWait=x=>{if(x.Waits==2)x.Windows=new[]{t};}};
+   check(!Reject(loggedNew,choice,CancellationToken.None)&&loggedNew.Launches==1&&loggedNew.Attached==1&&loggedNew.Selected==t,"已有已登录窗口时另开一次，并仅接管新登录窗口");
    var unavailable=new Backend{Windows=new[]{t},FailBrowser=true};check(Reject(unavailable,choice,CancellationToken.None)&&unavailable.Attached==0,"浏览器不可用不继续接管");
    var gone=new Backend{Windows=new[]{t},FailAttach=true};check(Reject(gone,choice,CancellationToken.None)&&gone.Attached==1&&gone.Launches==0,"窗口变化时停止，不改选或重开");
    var slow=new Backend{Visible=true,OnWait=x=>{if(x.Waits==12)x.Windows=new[]{t};}};check(!Reject(slow,choice,CancellationToken.None)&&slow.Attached==1,"启动初期的临时窗口不立即误报");

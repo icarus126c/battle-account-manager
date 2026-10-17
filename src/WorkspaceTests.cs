@@ -36,7 +36,7 @@ namespace BrowserManager {
                 Field<TextBlock>(w,"secret").Text="FAKE_SECRET";Field<Expander>(w,"accountMemo").IsExpanded=true;Field<Expander>(w,"accountMemo").IsExpanded=false;check(Field<TextBlock>(w,"secret").Text!="FAKE_SECRET","收起密码区域立即隐藏明文");
             }finally{w.Close();}
             var g=new MainWindow(true,"GLOBAL");try{Call(g,"ShowRecovery");var labels=Field<WrapPanel>(g,"recoveryActions").Children.OfType<Button>().Select(b=>Convert.ToString(b.Content)).ToArray();check(labels.Contains("重新认证")&&!labels.Contains("更换浏览器"),"外服失败提供外服认证入口");Entry.Render(g,Path.Combine(parent,"preview-global.png"),1100,920);}finally{g.Close();}
-            var settings=new SettingsDialog(null,"资料：示例目录\n最近备份：暂无");try{var labels=Walk((DependencyObject)settings.Content).OfType<Button>().Select(b=>Convert.ToString(b.Content)).ToArray();check(new[]{"备份资料","导入备份","仅备份账号备忘","环境与战网位置","解锁外服客户端"}.All(labels.Contains),"设置页集中了原有资料和环境功能");Entry.Render(settings,Path.Combine(parent,"preview-settings.png"),620,700);}finally{settings.Close();}
+            var settings=new SettingsDialog(null,"资料：示例目录\n最近备份：暂无");try{var labels=Walk((DependencyObject)settings.Content).OfType<Button>().Select(b=>Convert.ToString(b.Content)).ToArray();check(new[]{"备份资料","导入备份","仅备份账号备忘","环境与战网位置","解锁外服客户端","开启战网多开"}.All(labels.Contains),"设置页集中了原有资料和环境功能");Entry.Render(settings,Path.Combine(parent,"preview-settings.png"),620,700);}finally{settings.Close();}
             rows.Add("合计 "+rows.Count+" 项通过；虚构配置和静态界面，不登录账号或修改真实战网。");File.WriteAllLines(report,rows,new UTF8Encoding(true));
         }
     }

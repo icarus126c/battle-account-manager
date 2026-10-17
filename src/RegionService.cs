@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +34,7 @@ namespace BrowserManager {
         public byte[] Read(){if(!File.Exists(filePath)||new FileInfo(filePath).Length>4*1024*1024)throw new InvalidOperationException("没有可用的战网配置。请先安装并打开一次官方战网，然后正常退出。");return File.ReadAllBytes(filePath);}
         public void Write(byte[] expected,byte[] next){
             string temp=filePath+".region-"+Guid.NewGuid().ToString("N")+".tmp";
-            try {using(var file=new FileStream(temp,FileMode.CreateNew,FileAccess.Write,FileShare.None)){file.Write(next,0,next.Length);file.Flush(true);}Idle();byte[] current=Read();try{if(!current.SequenceEqual(expected))throw new InvalidOperationException("战网配置刚发生变化，本次未覆盖，请重新检查。");}finally{Array.Clear(current,0,current.Length);}File.Replace(temp,filePath,null);byte[] check=Read();try{if(!check.SequenceEqual(next))throw new InvalidOperationException("写入后配置再次变化，请保留当前状态；原入口设置备份已保存。");}finally{Array.Clear(check,0,check.Length);}}
+            try {using(var file=new FileStream(temp,FileMode.CreateNew,FileAccess.Write,FileShare.None)){file.Write(next,0,next.Length);file.Flush(true);}Idle();byte[] current=Read();try{if(!current.SequenceEqual(expected))throw new InvalidOperationException("战网配置刚发生变化，本次未覆盖，请重新检查。");}finally{Array.Clear(current,0,current.Length);}File.Replace(temp,filePath,null);byte[] check=Read();try{if(!check.SequenceEqual(next))throw new InvalidOperationException("设置已写入，但随后检测到配置变化，暂时无法确认最终结果。请检查官方战网设置；本次没有自动回退配置。");}finally{Array.Clear(check,0,check.Length);}}
             finally{if(File.Exists(temp))File.Delete(temp);}
         }
         internal static byte[] Encode(RegionRecord record){byte[] plain=Encoding.UTF8.GetBytes(new JavaScriptSerializer{MaxJsonLength=4*1024*1024}.Serialize(record));try{return ProtectedData.Protect(plain,Entropy,DataProtectionScope.CurrentUser);}finally{Array.Clear(plain,0,plain.Length);}}

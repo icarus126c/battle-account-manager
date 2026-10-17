@@ -25,3 +25,4 @@ SponsorCard.cs：本地纯文字赞助卡片、网址校验与关闭偏好，不
 PortableAccounts.cs：跨电脑账号迁移加密格式、限长读取、去除本机验证器和登录状态，不调用 DPAPI。
 PortableAccountsUi.cs：迁移密码设置、确认、导出及先预览后合并导入。
 PortableAccountsTests.cs：虚构资料的密码、篡改、合并、目标保护和原库保留检查。
+ClientWindowLaunch.cs：共用的显示／启动与窗口等待逻辑，真实窗口适配与模拟检查分离。ClientWindowLaunchTests.cs：已有窗口、延迟出现、超时及取消检查。

@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Windows;using System.Windows.Threading;
+﻿using System;using System.IO;using System.Windows;using System.Windows.Threading;
 namespace BrowserManager {
     public sealed class SecretClipboard:IDisposable {
         const string OwnerFormat="BattleAccountManager.CopyOwner";string owner;

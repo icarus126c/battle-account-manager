@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
@@ -37,14 +37,13 @@ namespace BrowserManager {
             return false;
         }
         public void LaunchClient() {
-            string path = OfficialClient.ClientPath;
-            if (ClientRunning()) return;
-            using (var p = Process.Start(new ProcessStartInfo(path) {
-                UseShellExecute = true, WorkingDirectory = Path.GetDirectoryName(path)
-            })) { }
+            bool found=ClientWindowLaunch.Request(new WindowsClientWindow());
+            stage(found?"已找到待登录窗口":"已发送新窗口启动请求，已有账号保持运行");
         }
         public Task Wait(CancellationToken cancel) { return Task.Delay(500, cancel); }
         public async Task<IDisposable> Attach(Target target, CancellationToken cancel) {
+            cancel.ThrowIfCancellationRequested();
+            WindowsClientWindow.PresentTarget(target.Pid);
             // A cancelled native attachment can finish late; serialize until it is removed.
             if (!await attachmentGate.WaitAsync(0, cancel))
                 throw new InvalidOperationException("上一次登录接管仍在收尾，请稍后再试。");

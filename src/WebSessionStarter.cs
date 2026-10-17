@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using CnDirect;
@@ -31,11 +31,17 @@ namespace BrowserManager {
             cancel.ThrowIfCancellationRequested();
             var candidates = backend.Targets();
             if (candidates.Length == 0) {
-                if (!backend.ClientRunning()) {
+                if (backend.ClientRunning()&&!backend.HasClientWindow()) {
+                    progress("检测到战网后台，短暂等待窗口出现");
+                    for(int i=0;i<4&&candidates.Length==0&&!backend.HasClientWindow();i++) {
+                        await backend.Wait(cancel);cancel.ThrowIfCancellationRequested();candidates=backend.Targets();
+                    }
+                }
+                if(candidates.Length==0){
                     cancel.ThrowIfCancellationRequested();
-                    progress("正在打开官方战网，请等待登录窗口");
+                    progress("正在打开官方战网登录窗口，已有账号保持运行");
                     backend.LaunchClient();
-                } else progress("战网正在运行，正在等待登录窗口");
+                }
                 // A visible window can still be a startup screen. Wait for an actual login target.
                 for (int attempt = 0; attempt < 90 && candidates.Length == 0; attempt++) {
                     await backend.Wait(cancel);

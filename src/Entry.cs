@@ -1,10 +1,13 @@
 ﻿using System;using System.IO;using System.Linq;using System.Threading;using System.Windows;using System.Windows.Media;using System.Windows.Media.Imaging;
 [assembly:System.Reflection.AssemblyTitle("战网账号管家")]
-[assembly:System.Reflection.AssemblyVersion("1.14.2.0")]
+[assembly:System.Reflection.AssemblyVersion("1.14.6.0")]
 namespace BrowserManager {
     public static class Entry {
         internal static void Render(Window window,string path,int width,int height){var visual=(FrameworkElement)window.Content;visual.Measure(new Size(width,height));visual.Arrange(new Rect(0,0,width,height));visual.UpdateLayout();var bitmap=new RenderTargetBitmap(width,height,96,96,PixelFormats.Pbgra32);bitmap.Render(visual);var png=new PngBitmapEncoder();png.Frames.Add(BitmapFrame.Create(bitmap));using(var file=File.Create(path))png.Save(file);}
         [STAThread] public static int Main(string[] args){
+            if(args.Length==2&&args[0]=="--release-regression-test"){try{ReleaseRegressionTests.Run(args[1]);return 0;}catch(Exception e){File.WriteAllText(args[1],e.ToString());return 1;}}
+            if(args.Length==2&&args[0]=="--multiple-test"){try{MultiInstanceTests.Run(args[1]);return 0;}catch(Exception e){File.WriteAllText(args[1],e.ToString());return 1;}}
+            if(args.Length==2&&args[0]=="--client-window-test"){try{ClientWindowLaunchTests.Run(args[1]);return 0;}catch(Exception e){File.WriteAllText(args[1],e.ToString());return 1;}}
             if(args.Length==2&&args[0]=="--copy-test"){try{CopyActionTests.Run(args[1]);return 0;}catch(Exception e){File.WriteAllText(args[1],e.ToString());return 1;}}
             if(args.Length==2&&args[0]=="--portable-test"){try{PortableAccountsTests.Run(args[1]);return 0;}catch(Exception e){File.WriteAllText(args[1],e.ToString());return 1;}}
             if(args.Length==2&&args[0]=="--preview-support"){

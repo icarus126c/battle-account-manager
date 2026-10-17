@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;using System.Security.Cryptography;
+﻿using System;using System.IO;using System.Linq;using System.Text;using System.Collections.Generic;using System.Security.Cryptography;
 namespace BrowserManager {
     public static class BrowserChoiceTests {
         static bool Reject(Action action){try{action();return false;}catch{return true;}}
