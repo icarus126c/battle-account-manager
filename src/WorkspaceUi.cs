@@ -44,11 +44,12 @@ namespace BrowserManager {
         readonly WrapPanel recoveryActions=new WrapPanel{Visibility=Visibility.Collapsed};
         readonly TextBlock regionAdvice=Ui.Text("检查战网记住的区服，不修改配置。",12);
         Expander accountMemo,accountNotes,regionAdvicePanel;string workspaceAccount;int adviceRevision;bool allowRegionRead;Func<string,string> regionAdviceReader;
-        UIElement BuildRecoveryStatus(){var panel=new StackPanel();panel.Children.Add(status);panel.Children.Add(recoveryActions);return panel;}
+        Button cancelStandalone;
+        UIElement BuildRecoveryStatus(){var panel=new StackPanel();panel.Children.Add(status);cancelStandalone=Ui.Button("取消等待",()=>{if(webPreparation!=null)webPreparation.Cancel();},false);cancelStandalone.Visibility=Visibility.Collapsed;panel.Children.Add(cancelStandalone);panel.Children.Add(recoveryActions);return panel;}
         void ClearRecovery(){recoveryActions.Children.Clear();recoveryActions.Visibility=Visibility.Collapsed;}
         void ShowRecovery(){
             ClearRecovery();var a=Selected;if(VaultDenied||a==null||a.Archived)return;
-            ActionButton(recoveryActions,a.Region=="CN"?"改用网页登录":"重新认证",()=>{if(Require().Region=="CN")PrepareWebLogin();else PrepareGlobal();},true);
+            ActionButton(recoveryActions,a.Region=="CN"?"改用网页登录":"账号密码登录",()=>{if(Require().Region=="CN")PrepareWebLogin();else PrepareGlobal();},true);
             ActionButton(recoveryActions,"检查区服",()=>{regionAdvicePanel.IsExpanded=true;regionAdvicePanel.BringIntoView();CheckRegionAdvice();},false);
             ActionButton(recoveryActions,"检查登录环境",ShowEnvironment,false);ActionButton(recoveryActions,"开启战网多开",EnableClientMultiple,false);
             if(a.Region=="CN")ActionButton(recoveryActions,"更换浏览器",()=>{options.IsExpanded=true;options.BringIntoView();},false);

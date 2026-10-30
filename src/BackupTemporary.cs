@@ -1,4 +1,4 @@
-using System;using System.IO;using System.Linq;using System.Text.RegularExpressions;
+﻿using System;using System.IO;using System.Linq;using System.Text.RegularExpressions;
 namespace BrowserManager {
     internal static class BackupTemporary {
         static bool PlainAncestors(string path){

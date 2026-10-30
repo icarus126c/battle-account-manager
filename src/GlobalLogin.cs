@@ -39,7 +39,7 @@ namespace BrowserManager {
      var state=GlobalConfig.Read(before);
      state.RequireForeign();
      stage(state.AutoLogin?"保持登录：开启":"保持登录：关闭或未确认");
-     if(!firstLogin&&!state.AutoLogin)throw new InvalidOperationException("战网的“保持登录”未开启。请点“首次登录 / 重新认证”，手动登录时勾选“保持登录”，再正常退出战网。未修改账号选择。");
+     if(!firstLogin&&!state.AutoLogin)throw new InvalidOperationException("战网的“保持登录”未开启。请点“账号密码登录”，手动登录时勾选“保持登录”，再正常退出战网。未修改账号选择。");
      stage("准备已验证的外服切换引擎");
      backend.Prepare(data,account);
      backend.Backup(before);
@@ -66,6 +66,7 @@ namespace BrowserManager {
       fresh=backend.Read();
       if(!GlobalIdentity.Same(GlobalIdentity.First(GlobalConfig.Read(fresh).Names),key))throw new InvalidOperationException("原版切换返回后，账号选择未能核对。请核对官方客户端，修改前备份已保留。");
      }
+     if(fresh!=null)stage(GlobalConfig.Read(fresh).AutoLogin?"启动后保持登录：开启（不代表认证有效）":"启动后保持登录：关闭或未确认，需要在官方登录页重新确认");
      stage("启动请求已发出，客户端登录结果待用户核对");
     }catch(CnEngine.PendingEngineException){stage("切换组件仍在运行，未回写配置，修改前备份已保留");throw;}catch(Exception error){
      if(called&&before!=null){
@@ -89,7 +90,7 @@ namespace BrowserManager {
   public TcNoGlobalBackend(string storeHome,string appRoot,bool skipRunningCheck=false){home=storeHome;engineFolder=Path.Combine(appRoot,"Engine");engineData=Path.Combine(storeHome,"data","tcno");this.skipRunningCheck=skipRunningCheck;}
   static string ConfigPath{get{return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),@"Battle.net\Battle.net.config");}}
   protected virtual bool ClientRunning(){foreach(string name in new[]{"Battle.net","Battle.net Helper","Battle.net Launcher"}){var processes=Process.GetProcessesByName(name);try{if(processes.Length!=0)return true;}finally{foreach(var p in processes)p.Dispose();}}return false;}
-  void RequireIdle(){if(ClientRunning())throw new InvalidOperationException("切换前请从战网菜单正常“退出”，不要“退出登录”。游戏和更新程序无需退出，管家不会结束程序；也可自行勾选“跳过战网运行检测”。");}
+  void RequireIdle(){if(ClientRunning())throw new InvalidOperationException("切换前请从战网菜单正常“退出”，不要“退出登录”。游戏和更新程序无需退出，管家不会结束程序。若要保留原账号并手动登录另一份，请用“单独打开战网”。");}
   static void RequireEngineIdle(){var processes=Process.GetProcessesByName("TcNo-Acc-Switcher");try{if(processes.Length!=0)throw new CnEngine.PendingEngineException();}finally{foreach(var p in processes)p.Dispose();}}
   public void Idle(){RequireEngineIdle();if(!skipRunningCheck)RequireIdle();}
   public byte[] Read(){if(!File.Exists(ConfigPath)||new FileInfo(ConfigPath).Length>4*1024*1024)throw new InvalidOperationException("请先正常打开官方战网并选择外服地区。");return File.ReadAllBytes(ConfigPath);}

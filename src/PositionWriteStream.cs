@@ -1,4 +1,4 @@
-using System;using System.IO;
+﻿using System;using System.IO;
 namespace BrowserManager {
     // .NET Framework ZIP writer reads Position even on non-seekable output.
     // Count plaintext bytes without buffering them or seeking the encryption stream.

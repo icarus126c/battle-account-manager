@@ -14,7 +14,7 @@ namespace BrowserManager {
             string registration=broken?"需要重新记住账号":registered?account.Region=="CN"?"已记住一键登录账号":"已保存账号切换信息":account.Region=="CN"?"可使用网页登录":"首次使用请先登录一次";
             string state=account.LoginState=="needs-auth"?"需要重新登录":account.LoginState=="pending"?"已发起登录 · 等待你核对":account.LoginState=="confirmed"?"上次已确认进入此账号":"登录结果尚未确认";
             string time=account.LoginCheckedUtc==DateTime.MinValue?"":"\n上次确认："+account.LoginCheckedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
-            return new LoginStatusInfo{Text=state+"\n"+registration+time,Attention=broken||account.LoginState=="needs-auth",Next=account.Region=="CN"?account.LoginState=="needs-auth"||!registered?"点下方“网页登录”，自动打开战网并准备浏览器。":"先退出所有战网窗口，再点“一键登录（实验）”。":account.LoginState=="needs-auth"||!registered?"首次使用：点“首次登录 / 重新认证”，登录时勾选“保持登录”。":"先退出战网，再点“切换并启动”。"};
+            return new LoginStatusInfo{Text=state+"\n"+registration+time,Attention=broken||account.LoginState=="needs-auth",Next=account.Region=="CN"?account.LoginState=="needs-auth"||!registered?"点下方“网页登录”，自动打开战网并准备浏览器。":"先退出所有战网窗口，再点“一键登录（实验）”。":account.LoginState=="needs-auth"||!registered?"首次使用：点“账号密码登录”，登录时勾选“保持登录”。":"先退出战网，再点“切换并启动”。"};
         }
     }
     public partial class MainWindow {

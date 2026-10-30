@@ -1,22 +1,23 @@
 ﻿using System;using System.IO;using System.Linq;using System.Diagnostics;using System.Threading;using System.Threading.Tasks;using System.Windows;using CnDirect;
 namespace BrowserManager {
     public partial class MainWindow {
+        internal static WindowsClientWindow StandaloneWindow(){return new WindowsClientWindow(true,true);}
         async void OpenClient(){
             if(busy||closed||VaultDenied)return;
             Stop();HidePassword();SetBusy(true);
             var cancel=new CancellationTokenSource();webPreparation=cancel;
-            cancelWeb.Visibility=Visibility.Visible;
+            cancelStandalone.Visibility=Visibility.Visible;
             var trace=new StartTrace(store.Home,region=="GLOBAL");
             status.Text="正在查找登录窗口；没有待登录窗口时将启动战网…";trace.Stage("单独打开战网：查找待登录窗口或发送启动请求");
             try{
-                bool found=await ClientWindowLaunch.Open(new WindowsClientWindow(region=="CN",true),cancel.Token);
+                bool found=await ClientWindowLaunch.Open(StandaloneWindow(),cancel.Token);
                 if(closed||VaultDenied)return;
                 status.Text=found?"战网窗口已打开，请在客户端继续操作并核对账号。这不代表登录已成功。":"已发出启动请求，暂未识别到目标窗口。请检查任务栏或更新提示；已打开的窗口保持运行。";
                 trace.Stage(found?"已找到客户端窗口（不代表登录成功）":"等待窗口超时；未重复启动");
                 if(!found)ShowRecovery();
             }catch(OperationCanceledException){status.Text="已停止等待战网窗口。已打开的战网保持运行。";trace.Stage("用户停止等待窗口");}
             catch(Exception e){trace.Failed(e);status.Text=e is InvalidOperationException?e.Message:"战网启动未完成，请检查安装位置、系统权限或更新提示。";ShowRecovery();}
-            finally{webPreparation=null;cancel.Dispose();cancelWeb.Visibility=Visibility.Collapsed;SetBusy(false);}
+            finally{webPreparation=null;cancel.Dispose();cancelStandalone.Visibility=Visibility.Collapsed;SetBusy(false);}
         }
         void RefreshTargets(){Stop();targets.ItemsSource=Hook.Targets().OrderByDescending(t=>t.Started).ToList();targets.SelectedIndex=targets.Items.Count>0?0:-1;status.Text=targets.Items.Count>0?"选择国服登录窗口，然后接管下一次新请求。":"未找到国服登录窗口，请先让战网停在国服登录页。";}
         bool ClearHook(){hookTimer.Stop();if(cancelWeb!=null)cancelWeb.Visibility=Visibility.Collapsed;if(hook==null)return false;var old=hook;hook=null;armedRoute=null;old.Dispose();return old.RestorationFailed;}
@@ -32,7 +33,7 @@ namespace BrowserManager {
             try{
                 await Task.Run(()=>{var backend=new TcNoGlobalBackend(store.Home,AppDomain.CurrentDomain.BaseDirectory,skipRunning);if(firstLogin)GlobalLaunch.PrepareLogin(backend,snapshot,selected,progress);else GlobalLaunch.Start(backend,snapshot,selected,progress);});
                 Used(selected.Id);LoginRequested(selected.Id,firstLogin?"first-login":"native");
-                status.Text=firstLogin?"已打开官方登录窗口。请手动登录“"+selected.Name+"”，勾选保持登录，核对昵称后正常退出；以后点“切换并启动”。":"已为“"+selected.Name+"”发起启动，请核对客户端账号。若要求密码，请使用“首次登录 / 重新认证”；启动完成不等于登录已成功。";
+                status.Text=firstLogin?"已打开官方登录窗口。请手动登录“"+selected.Name+"”，勾选保持登录，核对昵称后正常退出；以后点“切换并启动”。":"已为“"+selected.Name+"”发起启动，请核对客户端账号。若要求密码，请使用“账号密码登录”；启动完成不等于登录已成功。";
             }catch(Exception e){trace.Failed(e);ShowRecovery();status.Text=e is InvalidOperationException?e.Message:"外服准备未完成，请在“帮助与记录”查看切换记录。修改前备份已保留。";}
             finally{startWatch.Stop();SetBusy(false);}
         }
